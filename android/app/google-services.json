@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1053238718579",
+    "firebase_url": "https://parkinglotdetectionsystem-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "parkinglotdetectionsystem",
+    "storage_bucket": "parkinglotdetectionsystem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053238718579:android:4715e152a063f19da73a06",
+        "android_client_info": {
+          "package_name": "com.example.parking_app1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtk3s5PXQ4ldLXmsfM70-ipTv1Ys2NdqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053238718579:android:cf1c58586537d48ca73a06",
+        "android_client_info": {
+          "package_name": "com.example.test2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtk3s5PXQ4ldLXmsfM70-ipTv1Ys2NdqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053238718579:android:1b216215867ee574a73a06",
+        "android_client_info": {
+          "package_name": "com.example.untitled8"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtk3s5PXQ4ldLXmsfM70-ipTv1Ys2NdqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -33,7 +33,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,41 +40,27 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title:  Text(
           'PARKING OVERVIEW',
-          style: TextStyle(
+          style:TextStyle(
             fontWeight: FontWeight.normal,
             fontSize: 20,
             letterSpacing: 3,
 
           ),
         ),
-        toolbarHeight: 55,
+        toolbarHeight: 70,
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top:10),
         child: Column(
-          children: [
 
-            SizedBox(height: 15),
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-              items: ['Ground Level', 'Level 2', 'Level 3', 'Level 4'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (_) {},
-              hint: Text('Ground Level'),
-            ),
-            SizedBox(height: 0),
-            Expanded(
-                child: ParkingOverview(),
-              ),
+          children: [Expanded(child:
+          Container(child:ParkingOverview(),))
+
+
+
           ],
         ),
       ),

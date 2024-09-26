@@ -40,7 +40,7 @@ class _ParkingOverviewState extends State<ParkingOverview> {
           List<Widget> parkingWidgetsB = [];
           List<Widget> parkingWidgetsC = [];
 
-          for (int i = 1; i <= 7; i++) {
+          for (int i = 1; i <= 8; i++) {
             String spaceId = i.toString().padLeft(2, '0');
             bool isOccupied = data[spaceId] as bool? ?? false;
             if (!isOccupied) availableSpots++;
@@ -51,7 +51,7 @@ class _ParkingOverviewState extends State<ParkingOverview> {
             parkingWidgetsA.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
-          for (int i = 8; i <= 15; i++) {
+          for (int i = 9; i <= 16; i++) {
             String spaceId = i.toString().padLeft(2, '0');
             bool isOccupied = data[spaceId] as bool? ?? false;
             if (!isOccupied) availableSpots++;
@@ -62,7 +62,7 @@ class _ParkingOverviewState extends State<ParkingOverview> {
             parkingWidgetsB.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
-          for (int i = 16; i <= 24; i++) {
+          for (int i = 17; i <= 24; i++) {
             String spaceId = i.toString().padLeft(2, '0');
             bool isOccupied = data[spaceId] as bool? ?? false;
             if (!isOccupied) availableSpots++;

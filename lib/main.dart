@@ -47,24 +47,19 @@ class _HomePageState extends State<HomePage> {
 
           ),
         ),
-        toolbarHeight: 70,
+        toolbarHeight: 60,
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top:10),
+        padding: const EdgeInsets.only(top: 0),
         child: Column(
-
           children: [Expanded(child:
           Container(child:ParkingOverview(),))
-
-
-
           ],
         ),
       ),
     );
   }
 }
-

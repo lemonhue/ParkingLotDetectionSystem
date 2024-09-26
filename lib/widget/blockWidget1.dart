@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_tts/flutter_tts.dart';  // Add this import
-
 import '../pages/feedbackPage.dart';
 
 class ParkingOverview extends StatefulWidget {
@@ -13,14 +12,15 @@ class _ParkingOverviewState extends State<ParkingOverview> {
   FlutterTts flutterTts = FlutterTts();  // Initialize FlutterTts
   bool ttsEnabled = false;  // Flag to track if TTS is enabled
   int previousAvailableSpots = -1;  // Keep track of previous available spots
+  Map<String, bool> previousStates = {};  // Keep track of previous states of parking spaces
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('parking-space')
-            .doc('spaces')
+            .collection('parking-lot')
+            .doc('parking space')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -41,21 +41,36 @@ class _ParkingOverviewState extends State<ParkingOverview> {
           List<Widget> parkingWidgetsC = [];
 
           for (int i = 1; i <= 7; i++) {
-            bool isOccupied = data['${i.toString().padLeft(2, '0')}'] as bool? ?? false;
+            String spaceId = i.toString().padLeft(2, '0');
+            bool isOccupied = data[spaceId] as bool? ?? false;
             if (!isOccupied) availableSpots++;
-            parkingWidgetsA.add(_buildParkingSpace(isOccupied, '$i', rotationAngle: 0));
+
+            // Log the event if state has changed
+            _logParkingEvent(spaceId, isOccupied);
+
+            parkingWidgetsA.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
           for (int i = 8; i <= 15; i++) {
-            bool isOccupied = data['${i.toString().padLeft(2, '0')}'] as bool? ?? false;
+            String spaceId = i.toString().padLeft(2, '0');
+            bool isOccupied = data[spaceId] as bool? ?? false;
             if (!isOccupied) availableSpots++;
-            parkingWidgetsB.add(_buildParkingSpace(isOccupied, '$i', rotationAngle: 0));
+
+            // Log the event if state has changed
+            _logParkingEvent(spaceId, isOccupied);
+
+            parkingWidgetsB.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
-          for (int i = 16; i <= 21; i++) {
-            bool isOccupied = data['${i.toString().padLeft(2, '0')}'] as bool? ?? false;
+          for (int i = 16; i <= 24; i++) {
+            String spaceId = i.toString().padLeft(2, '0');
+            bool isOccupied = data[spaceId] as bool? ?? false;
             if (!isOccupied) availableSpots++;
-            parkingWidgetsC.add(_buildParkingSpace(isOccupied, '$i', rotationAngle: 0));
+
+            // Log the event if state has changed
+            _logParkingEvent(spaceId, isOccupied);
+
+            parkingWidgetsC.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
           // If TTS is enabled and availableSpots have changed, speak the new count
@@ -74,14 +89,12 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                   children: [
                     Column(
                       children: [
-
                         ...parkingWidgetsA,
                       ],
                     ),
                     SizedBox(width: 60),
                     Column(
                       children: [
-
                         ...parkingWidgetsB,
                       ],
                     ),
@@ -98,7 +111,15 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                   'Available Spots: $availableSpots',
                   style: TextStyle(fontSize: 20),
                 ),
-                IconButton(
+
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      ttsEnabled = !ttsEnabled;  // Toggle TTS on button press
+                    });
+                  },
+                  child: Text(ttsEnabled ? 'Disable Announcements' : 'Enable Announcements'),
+                ),IconButton(
                   icon: Icon(Icons.feedback),
                   onPressed: () {
                     Navigator.push(
@@ -107,14 +128,6 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                     );
                   },
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      ttsEnabled = !ttsEnabled;  // Toggle TTS on button press
-                    });
-                  },
-                  child: Text(ttsEnabled ? 'Disable Announcements' : 'Enable Announcements'),
-                )
               ],
             ),
           );
@@ -127,6 +140,29 @@ class _ParkingOverviewState extends State<ParkingOverview> {
     String text = "There are $availableSpots available parking spots.";
     await flutterTts.speak(text);  // Use Flutter TTS to speak the text
   }
+
+  Future<void> _logParkingEvent(String spaceId, bool isOccupied) async {
+    bool previousState = previousStates[spaceId] ?? !isOccupied;  // Set default previous state to the opposite if null
+    if (previousState != isOccupied) {
+      // Generate a unique field name using the current timestamp
+      String eventKey = DateTime.now().millisecondsSinceEpoch.toString();
+
+      // Record the change event to Firebase directly in the document with a unique field for each event
+      await FirebaseFirestore.instance
+          .collection('parking-events')        // Main collection
+          .doc(spaceId)                        // Document with spaceId as the key
+          .set({
+        eventKey: {
+          'isOccupied': isOccupied,
+          'timestamp': FieldValue.serverTimestamp(),
+        }
+      }, SetOptions(merge: true)); // Merge to add a new event without overwriting other events
+
+      // Update the previous state
+      previousStates[spaceId] = isOccupied;
+    }
+  }
+
 
   @override
   void dispose() {

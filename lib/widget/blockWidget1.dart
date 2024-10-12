@@ -17,10 +17,10 @@ class _ParkingOverviewState extends State<ParkingOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<DocumentSnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('parking-lot')
-            .doc('parking space')
+            .collection('parking-lot')  // Directly access 'parking-lot' collection
+            .where(FieldPath.documentId, whereIn: List.generate(24, (index) => (index + 1).toString()))  // Query documents 1 to 24
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -30,19 +30,19 @@ class _ParkingOverviewState extends State<ParkingOverview> {
             return Center(child: Text('No data available'));
           }
 
-          var data = snapshot.data!.data() as Map<String, dynamic>?;
-          if (data == null) {
-            return Center(child: Text('No data available'));
-          }
-
+          var documents = snapshot.data!.docs;
           int availableSpots = 0;
           List<Widget> parkingWidgetsA = [];
           List<Widget> parkingWidgetsB = [];
           List<Widget> parkingWidgetsC = [];
 
           for (int i = 1; i <= 8; i++) {
-            String spaceId = i.toString().padLeft(2, '0');
-            bool isOccupied = data[spaceId] as bool? ?? false;
+            String spaceId = i.toString();
+            var document = documents.firstWhere(
+                  (doc) => doc.id == spaceId,
+              orElse: () => throw Exception('Document $spaceId not found'),
+            );
+            bool isOccupied = document['intersected'] as bool? ?? false;
             if (!isOccupied) availableSpots++;
 
             // Log the event if state has changed
@@ -51,9 +51,13 @@ class _ParkingOverviewState extends State<ParkingOverview> {
             parkingWidgetsA.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
-          for (int i = 9; i <= 16; i++) {
-            String spaceId = i.toString().padLeft(2, '0');
-            bool isOccupied = data[spaceId] as bool? ?? false;
+          for (int i = 17; i <= 24; i++) {
+            String spaceId = i.toString();
+            var document = documents.firstWhere(
+                  (doc) => doc.id == spaceId,
+              orElse: () => throw Exception('Document $spaceId not found'),
+            );
+            bool isOccupied = document['intersected'] as bool? ?? false;
             if (!isOccupied) availableSpots++;
 
             // Log the event if state has changed
@@ -62,9 +66,13 @@ class _ParkingOverviewState extends State<ParkingOverview> {
             parkingWidgetsB.add(_buildParkingSpace(isOccupied, spaceId, rotationAngle: 0));
           }
 
-          for (int i = 17; i <= 24; i++) {
-            String spaceId = i.toString().padLeft(2, '0');
-            bool isOccupied = data[spaceId] as bool? ?? false;
+          for (int i = 9; i <= 16; i++) {
+            String spaceId = i.toString();
+            var document = documents.firstWhere(
+                  (doc) => doc.id == spaceId,
+              orElse: () => throw Exception('Document $spaceId not found'),
+            );
+            bool isOccupied = document['intersected'] as bool? ?? false;
             if (!isOccupied) availableSpots++;
 
             // Log the event if state has changed
@@ -95,13 +103,13 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                     SizedBox(width: 60),
                     Column(
                       children: [
-                        ...parkingWidgetsB,
+                        ...parkingWidgetsB.reversed,
                       ],
                     ),
                     SizedBox(width: 60),
                     Column(
                       children: [
-                        ...parkingWidgetsC,
+                        ...parkingWidgetsC.reversed,
                       ],
                     ),
                   ],
@@ -119,7 +127,8 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                     });
                   },
                   child: Text(ttsEnabled ? 'Disable Announcements' : 'Enable Announcements'),
-                ),IconButton(
+                ),
+                IconButton(
                   icon: Icon(Icons.feedback),
                   onPressed: () {
                     Navigator.push(
@@ -162,7 +171,6 @@ class _ParkingOverviewState extends State<ParkingOverview> {
       previousStates[spaceId] = isOccupied;
     }
   }
-
 
   @override
   void dispose() {

@@ -124,6 +124,9 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                   onPressed: () {
                     setState(() {
                       ttsEnabled = !ttsEnabled;  // Toggle TTS on button press
+                      if (ttsEnabled) {
+                        _speakAvailableSpots(availableSpots);  // Speak the available spots immediately
+                      }
                     });
                   },
                   child: Text(ttsEnabled ? 'Disable Announcements' : 'Enable Announcements'),

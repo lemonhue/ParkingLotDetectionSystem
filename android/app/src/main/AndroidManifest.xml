@@ -7,7 +7,7 @@
     <application
         android:label="Parking Lot Detection System"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

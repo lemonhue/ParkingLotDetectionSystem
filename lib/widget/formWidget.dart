@@ -16,13 +16,14 @@ class MyCustomFormState extends State<MyCustomForm> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String _selectedCategory = 'General'; // Default value
 
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
         children: <Widget>[
-          const SizedBox(height: 20),
+          const SizedBox(height: 20, width: 20),
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -40,11 +41,15 @@ class MyCustomFormState extends State<MyCustomForm> {
             },
             value: _selectedCategory,
             hint: const Text('Select Category'),
+            dropdownColor: Colors.white,
+
           ),
           Container(
             margin: const EdgeInsets.only(top: 10),
             padding: const EdgeInsets.all(2.0),
-            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            decoration: BoxDecoration( color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)
+            )),
             child: SizedBox(
               height: 450,
               child: TextFormField(
@@ -61,6 +66,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
           ),
+
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
@@ -80,6 +86,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 _controller.clear();
               }
             },
+
             child: const Text('Submit'),
           ),
         ],

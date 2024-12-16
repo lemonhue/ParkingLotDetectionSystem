@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled8/pages/feedbackPage.dart';
 import 'package:untitled8/widget/parkingOverview.dart';
 import 'firebase_options.dart';
 import 'constants/colors.dart';
-
+import 'package:lottie/lottie.dart';
+import 'package:untitled8/widget/formWidget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,12 +16,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
       home: HomePage(),
-      routes: {
-        FeedbackPage.routeName: (context) => FeedbackPage(),
-      },
     );
   }
 }
@@ -40,67 +36,119 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // Get the screen size using MediaQuery
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: yellow,
-
-      appBar: AppBar(
-        title: Text(
-          'Parking Overview',
-          style: TextStyle(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        extendBodyBehindAppBar: true, // This allows the body to extend behind the AppBar
+        appBar: AppBar(
+          title: Text(
+            'PARKING APP',
+            style: TextStyle(
               fontWeight: FontWeight.normal,
-              fontSize: screenWidth * 0.05, // Responsive font size
-              letterSpacing: 3,
-              color: Colors.black
+              fontSize: screenWidth * 0.06, // Responsive font size
+              letterSpacing: 10,
+              color: indigo,
+            ),
+          ),
+          toolbarHeight: screenHeight * 0.08, // Responsive toolbar height
+          backgroundColor: Colors.transparent, // Transparent background
+          elevation: 0, // Remove shadow from the AppBar
+          centerTitle: true,
+          bottom: TabBar(
+            indicatorColor: indigo,
+            indicatorWeight: 3,
+            labelColor: indigo,
+            unselectedLabelColor: indigo,
+            tabs: [
+              Tab(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Adjust padding to make it circular
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50) // Border color
+                  ),
+                  child: Text('OVERVIEW', style: TextStyle(fontWeight: FontWeight.normal, letterSpacing: 2)),
+                ),
+              ),
+              Tab(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Adjust padding to make it circular
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50) // Border color
+                  ),
+                  child: Text('FEEDBACK', style: TextStyle(fontWeight: FontWeight.normal, letterSpacing: 2)) ,
+                ),
+              ),
+            ],
+            dividerColor: Colors.transparent,
           ),
         ),
-        toolbarHeight: screenHeight * 0.08,
-        // Responsive toolbar height
-        backgroundColor: yellow,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/BlueEdge.png',
-              fit: BoxFit.cover, // Ensures the image covers the entire screen
+        body: Stack(
+          fit: StackFit.expand, // Makes the stack expand to fill the entire screen
+          children: [
+            Lottie.asset(
+              'assets/gradient.json', // Path to your Lottie animation file
+              fit: BoxFit.cover, // Make the animation cover the whole screen
+              height: double.infinity,
+              width: double.infinity,
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: screenHeight * 0.00),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Container(
-                        color: Colors.transparent,
-                        // Let the image background show
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.05,
+            // Column to arrange TabBar and content
+            Column(
+              children: [
+                // Use Expanded to allow TabBarView to take available space
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: screenHeight * 0.17),  // Add top padding to lower ParkingOverview
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                ),
+                                child: IntrinsicHeight(
+                                  child: Align(
+                                    alignment: Alignment.topCenter,  // Align ParkingOverview to the top
+                                    child: ParkingOverview(),  // Ensure this is below the TabBar
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        child: ParkingOverview(),
                       ),
-                    ),
+                      Padding(
+                        padding: EdgeInsets.only(top: screenHeight * 0.17, right: screenWidth * .05, left: screenWidth * .05),  // Add top padding to lower ParkingOverview
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight
+                                ),
+                                child: IntrinsicHeight(
+                                  child: Align(
+                                    alignment: Alignment.topCenter,  // Align ParkingOverview to the top
+                                    child: MyCustomForm(),  // Ensure this is below the TabBar
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ),
-        ],
-      ),);
+          ],
+        ),
+      ),
+    );
   }
 }

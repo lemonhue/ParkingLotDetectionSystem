@@ -80,7 +80,7 @@ flutter:
      - assets/gradient.json
      - assets/background.json
      - assets/LogoFinal.jpg
-
+     - assets/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

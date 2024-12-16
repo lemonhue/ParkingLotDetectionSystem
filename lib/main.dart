@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -88,11 +89,12 @@ class _HomePageState extends State<HomePage> {
         body: Stack(
           fit: StackFit.expand, // Makes the stack expand to fill the entire screen
           children: [
+
             Lottie.asset(
-              'assets/gradient.json', // Path to your Lottie animation file
-              fit: BoxFit.cover, // Make the animation cover the whole screen
-              height: double.infinity,
-              width: double.infinity,
+              'assets/gradient2.json', // Path to  Lottie animation file
+              fit: BoxFit.cover,
+
+              // Make the animation cover the whole screen
             ),
             // Column to arrange TabBar and content
             Column(
@@ -102,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                   child: TabBarView(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: screenHeight * 0.17),  // Add top padding to lower ParkingOverview
+                        padding: EdgeInsets.only(top: screenHeight * 0.19),  // Add top padding to lower ParkingOverview
                         child: LayoutBuilder(
                           builder: (context, constraints) {
                             return SingleChildScrollView(

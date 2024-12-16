@@ -102,8 +102,10 @@ class _ParkingOverviewState extends State<ParkingOverview> {
                 const SizedBox(height: 20),
                 // Parking layout
                 Row(
+
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
                     Flexible(
                       child: Column(
                         children: parkingWidgetsA,
